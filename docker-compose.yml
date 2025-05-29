@@ -1,0 +1,28 @@
+services:
+  hyperf-skeleton:
+    image: hyperf-dev-server:latest
+    build:
+      dockerfile: "docker/dev.Dockerfile"
+    volumes:
+      - ./:/opt/www
+    ports:
+      - "9501:9501"
+    environment:
+      - APP_ENV=dev
+      - SCAN_CACHEABLE=false
+    entrypoint: ["php", "/opt/www/bin/hyperf.php", "server:watch"]
+
+  postgres:
+    image: postgres:16-alpine3.19
+    ports:
+      - "5434:5432"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+
+networks:
+  default:
+    name: hyperf-skeleton
