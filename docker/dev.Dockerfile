@@ -44,6 +44,8 @@ WORKDIR /opt/www
 # COPY ./composer.* /opt/www/
 # RUN composer install --no-dev --no-scripts
 
+RUN git config --global --add safe.directory /opt/www
+
 COPY . /opt/www
 RUN chmod +x /usr/local/bin/composer
 
