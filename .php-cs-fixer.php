@@ -21,12 +21,7 @@ EOF;
 return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules([
-        '@PSR2' => true,
-        'yoda_style' => [
-            'always_move_variable' => false,
-            'equal' => false,
-            'identical' => false,
-        ]
+        '@PSR2' => true
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()
