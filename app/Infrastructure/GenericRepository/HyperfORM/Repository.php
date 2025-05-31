@@ -67,10 +67,12 @@ class Repository implements GenericRepositoryInterface
     #[Override]
     public function save(object $entity): void
     {
-        $id = (string) Uuid::uuid4();
-        $entity->id = $id;
+        $id = (string)Uuid::uuid4();
 
-        $this->model->fill((array) $entity);
+        $this->model->fill([
+            'id' => $id,
+            ...(array)$entity
+        ]);
         $this->model->save();
 
         $this->lastInsertedId = $id;

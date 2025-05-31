@@ -15,9 +15,14 @@ readonly class Input implements InputInterface
         return $attributes[Dispatched::class]->params;
     }
 
-    #[\Override]
+    /**
+     * Returns the parsed body of the request.
+     *
+     * @param ServerRequestInterface $request
+     * @return array<string, mixed>
+     */
     public function getData(ServerRequestInterface $request): array
     {
-        return $request->getParsedBody() ?? [];
+        return (array)$request->getParsedBody();
     }
 }

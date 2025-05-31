@@ -29,14 +29,12 @@ class ClientController
     public function create(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
     {
         try {
+            /** @var array{name: string, email: string} $body */
             $body = $this->input->getData($request);
 
             $validator = $this->validationFactory->make(
                 $body,
-                [
-                    'name' => 'required|string',
-                    'email' => 'required|email',
-                ]
+                ['name' => 'required|string', 'email' => 'required|email']
             );
             $validator->validate();
 

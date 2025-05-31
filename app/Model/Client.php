@@ -33,11 +33,13 @@ class Client extends Model
 
     /**
      * The attributes that are mass assignable.
+     * @var array<string>
      */
     protected array $fillable = ['id', 'name', 'email'];
 
     /**
      * The attributes that should be cast to native types.
+     * @var array<string, string>
      */
     protected array $casts = ['created_at' => 'datetime', 'updated_at' => 'datetime'];
 
