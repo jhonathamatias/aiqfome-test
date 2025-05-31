@@ -13,6 +13,7 @@ use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Hyperf\Validation\ValidationException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 
 class ClientController
 {
@@ -20,6 +21,7 @@ class ClientController
         protected InputInterface $input,
         protected OutputInterface $output,
         protected ValidatorFactoryInterface $validationFactory,
+        protected LoggerInterface $logger,
         protected CreateClient $createClient
     ) {
     }
@@ -47,9 +49,14 @@ class ClientController
         } catch (AlreadyExistsException $e) {
             return $this->output->getResponseError($response, 409, $e->getMessage());
         } catch (ValidationException $e) {
-            return $this->output->getResponseError($response, 422, 'Validation failed', $e->validator->errors()->toArray());
+            $errors = $e->validator->errors()->all();
+            return $this->output->getResponseError($response, 422, 'Validation failed', $errors);
         } catch (Exception $e) {
-            return $this->output->getResponseError($response, 400, $e->getMessage());
+            $this->logger->error('Error creating client', [
+                'exception' => $e,
+                'request' => $this->input->getData($request),
+            ]);
+            return $this->output->getResponseError($response, 400, 'An error occurred while creating the client');
         }
     }
 }
