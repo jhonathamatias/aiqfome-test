@@ -128,7 +128,7 @@ class ClientController
                 'exception' => $e,
                 'request' => $this->input->getData($request),
             ]);
-            return $this->output->getResponseError($response, 400, 'An error occurred while creating the client');
+            return $this->output->getResponseError($response, 400, 'An error occurred while updating the client');
         }
     }
 

@@ -20,12 +20,12 @@ class UpdateClient
     }
 
     /**
-     * Create a new client.
+     * Update a new client.
      * @throws Exception
      */
     public function execute(string $id, string|null $name = null, string|null $email = null): bool
     {
-        $client = $this->getClient->execute($id);
+        $this->getClient->execute($id);
 
         $fields = [];
 
@@ -38,6 +38,7 @@ class UpdateClient
             $fields['email'] = $email;
         }
 
+        $this->criteria->clear();
         $this->criteria->equal('id', $id);
         $result = $this->repository->update($this->criteria, $fields);
 
