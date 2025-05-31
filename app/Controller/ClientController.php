@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Application\UseCase\Clients\CreateClient;
+use App\Application\UseCase\Clients\GetClient;
 use App\Domain\Entity\Exceptions\AlreadyExistsException;
+use App\Exception\NotFoundException;
 use App\Web\InputInterface;
 use App\Web\OutputInterface;
 use Exception;
@@ -22,7 +24,8 @@ class ClientController
         protected OutputInterface $output,
         protected ValidatorFactoryInterface $validationFactory,
         protected LoggerInterface $logger,
-        protected CreateClient $createClient
+        protected CreateClient $createClient,
+        protected GetClient $getClient
     ) {
     }
 
@@ -55,6 +58,31 @@ class ClientController
                 'request' => $this->input->getData($request),
             ]);
             return $this->output->getResponseError($response, 400, 'An error occurred while creating the client');
+        }
+    }
+
+    public function get(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        try {
+            /** @var array<string, string> $urlParams */
+            $urlParams = $this->input->getUrlParameters($request);
+
+            $validator = $this->validationFactory->make(
+                $urlParams,
+                ['id' => 'uuid|required']
+            );
+            $validator->validate();
+
+            $client = $this->getClient->execute($urlParams['id']);
+
+            return $this->output->getResponse($response, 200, $client);
+        } catch (NotFoundException $e) {
+            return $this->output->getResponseError($response, 404, $e->getMessage());
+        } catch (ValidationException $e) {
+            $errors = $e->validator->errors()->all();
+            return $this->output->getResponseError($response, 422, 'Validation failed', $errors);
+        } catch (Exception) {
+            return $this->output->getResponseError($response, 400, 'An error occurred while retrieving the client');
         }
     }
 }
