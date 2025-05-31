@@ -92,7 +92,7 @@ class Repository implements GenericRepositoryInterface
             [$method, $params] = $this->translateQuery($criteriaItem);
             $builder = $builder->{$method}(...$params);
         }
-        return (array) $builder
+        return (array)$builder
             ->get()
             ->getIterator();
     }
@@ -100,6 +100,18 @@ class Repository implements GenericRepositoryInterface
     public function getInsertedLastId(): string
     {
         return $this->lastInsertedId;
+    }
+
+    public function update(CriteriaInterface $criteria, array $fields): bool
+    {
+        $builder = $this->model;
+
+        foreach ($criteria->getCriteriaList() as $criteriaItem) {
+            [$method, $params] = $this->translateQuery($criteriaItem);
+            $builder = $builder->{$method}(...$params);
+        }
+
+        return (bool)$builder->update($fields);
     }
 
     /**

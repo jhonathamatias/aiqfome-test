@@ -25,4 +25,11 @@ interface GenericRepositoryInterface
     public function delete(int|string $id): void;
 
     public function getInsertedLastId(): string;
+
+    /**
+     * @param CriteriaInterface $criteria
+     * @param array<string, mixed> $fields
+     * @return bool
+     */
+    public function update(CriteriaInterface $criteria, array $fields): bool;
 }

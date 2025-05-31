@@ -19,7 +19,9 @@ Router::get('/favicon.ico', function () {
 });
 
 Router::addGroup('/api/v1', function () {
-    Router::post('/clients', [Controller\ClientController::class, 'create']);
-    Router::get('/clients/{id}', [Controller\ClientController::class, 'get']);
-
+    Router::addGroup('/clients', function () {
+        Router::post('/', [Controller\ClientController::class, 'create']);
+        Router::get('/{id}', [Controller\ClientController::class, 'get']);
+        Router::put('/{id}', [Controller\ClientController::class, 'update']);
+    });
 });
