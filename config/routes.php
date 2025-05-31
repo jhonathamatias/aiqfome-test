@@ -23,5 +23,6 @@ Router::addGroup('/api/v1', function () {
         Router::post('/', [Controller\ClientController::class, 'create']);
         Router::get('/{id}', [Controller\ClientController::class, 'get']);
         Router::put('/{id}', [Controller\ClientController::class, 'update']);
+        Router::delete('/{id}', [Controller\ClientController::class, 'delete']);
     });
 });

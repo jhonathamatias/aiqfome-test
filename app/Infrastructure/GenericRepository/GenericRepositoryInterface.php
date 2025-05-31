@@ -22,7 +22,7 @@ interface GenericRepositoryInterface
 
     public function save(object $entity): void;
 
-    public function delete(int|string $id): void;
+    public function delete(int|string $id): bool;
 
     public function getInsertedLastId(): string;
 

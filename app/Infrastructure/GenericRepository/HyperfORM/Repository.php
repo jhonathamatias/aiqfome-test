@@ -79,9 +79,11 @@ class Repository implements GenericRepositoryInterface
     }
 
     #[Override]
-    public function delete(int|string $id): void
+    public function delete(int|string $id): bool
     {
-        // TODO: Implement delete() method.
+        $builder = $this->model;
+        $builder =  $builder->where('id', '=', $id);
+        return (bool)$builder->delete();
     }
 
     #[Override]

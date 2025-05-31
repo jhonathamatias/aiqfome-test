@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Model;
 
 use Carbon\Carbon;
+use Hyperf\Database\Model\SoftDeletes;
 use Hyperf\DbConnection\Model\Model;
 
 /**
@@ -24,6 +25,8 @@ use Hyperf\DbConnection\Model\Model;
  */
 class Client extends Model
 {
+    use SoftDeletes;
+
     public bool $incrementing = false;
 
     /**
