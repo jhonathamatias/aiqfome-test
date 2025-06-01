@@ -2,6 +2,7 @@
 
 namespace App\Application\UseCase\Clients;
 
+use App\Domain\Entity\Exceptions\AlreadyExistsException;
 use App\Infrastructure\Apis\FakeStoreApi;
 use App\Infrastructure\GenericRepository\CriteriaInterface;
 use App\Infrastructure\GenericRepository\GenericRepositoryInterface;
@@ -16,7 +17,7 @@ class AddFavoriteProduct
     ) {
     }
     
-    public function execute(string $clientId, int $productId): object|false
+    public function execute(string $clientId, int $productId): object
     {
         $this->getClient->execute($clientId);
 
@@ -28,7 +29,7 @@ class AddFavoriteProduct
         $existingProduct = $this->repository->matching($criteria)[0] ?? null;
 
         if ($existingProduct !== null) {
-            throw new \RuntimeException("Product with ID {$productId} already exists in favorites.");
+            throw new AlreadyExistsException("Product with ID {$productId} already exists in favorites.");
         }
 
         $product = $this->api->fetchProduct($productId);
