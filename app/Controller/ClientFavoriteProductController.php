@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Application\UseCase\Clients\AddFavoriteProduct;
+use App\Application\UseCase\Clients\AddManyFavoritesProducts;
 use App\Domain\Entity\Exceptions\AlreadyExistsException;
 use App\Web\InputInterface;
 use App\Web\OutputInterface;
@@ -19,7 +20,8 @@ class ClientFavoriteProductController
         protected InputInterface $input,
         protected OutputInterface $output,
         protected LoggerInterface $logger,
-        protected AddFavoriteProduct $addFavoriteProduct
+        protected AddFavoriteProduct $addFavoriteProduct,
+        protected AddManyFavoritesProducts $addManyFavoritesProducts
     ) {
     }
 
@@ -37,6 +39,27 @@ class ClientFavoriteProductController
             return $this->output->getResponse($response, 201, $product);
         } catch (AlreadyExistsException $e) {
             return $this->output->getResponseError($response, 409, $e->getMessage());
+        } catch (Exception $e) {
+            $this->logger->error('Error adding favorite product', [
+                'exception' => $e,
+                'request' => $this->input->getData($request),
+            ]);
+            return $this->output->getResponseError($response, 400, $e->getMessage());
+        }
+    }
+
+    public function AddManyFavorites(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        try {
+            /** @var object{id: string} $urlParams */
+            $urlParams = (object)$this->input->getUrlParameters($request);
+
+            /** @var object{product_ids: array<int>} $data */
+            $data = (object)$this->input->getData($request);
+
+            $products = $this->addManyFavoritesProducts->execute($urlParams->id, $data->product_ids);
+
+            return $this->output->getResponse($response, 207, $products);
         } catch (Exception $e) {
             $this->logger->error('Error adding favorite product', [
                 'exception' => $e,

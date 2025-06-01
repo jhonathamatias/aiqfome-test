@@ -22,7 +22,7 @@ use Ramsey\Uuid\Uuid;
 
 class Repository implements GenericRepositoryInterface
 {
-    protected Model $model;
+    protected string $model;
 
     protected string $lastInsertedId;
 
@@ -34,23 +34,19 @@ class Repository implements GenericRepositoryInterface
     {
         $className = Str::singular($collectionName);
         $collectionStudly = Str::studly($className);
-        $classResolution = "\\App\\Model\\{$collectionStudly}";
-
-        /**
-         * @var Model $model
-         */
-        $model = new $classResolution();
-
-        $this->model = $model;
+        $this->model = "\\App\\Model\\{$collectionStudly}";
     }
 
     #[Override]
     public function getById(int|string $id): false|object
     {
+        /** @var Model $model */
+        $model = new $this->model();
+
         /**
          * @phpstan-ignore-next-line
          */
-        $result = $this->model->find($id);
+        $result = $model->find($id);
         if ($result === null) {
             return false;
         }
@@ -69,11 +65,14 @@ class Repository implements GenericRepositoryInterface
     {
         $id = (string)Uuid::uuid4();
 
-        $this->model->fill([
+        /** @var Model $model */
+        $model = new $this->model();
+
+        $model->fill([
             'id' => $id,
             ...(array)$entity
         ]);
-        $this->model->save();
+        $model->save();
 
         $this->lastInsertedId = $id;
     }
@@ -81,7 +80,9 @@ class Repository implements GenericRepositoryInterface
     #[Override]
     public function delete(int|string $id): bool
     {
-        $builder = $this->model;
+        /** @var Model $model */
+        $model = new $this->model();
+        $builder = $model;
         $builder =  $builder->where('id', '=', $id);
         return (bool)$builder->delete();
     }
@@ -89,7 +90,10 @@ class Repository implements GenericRepositoryInterface
     #[Override]
     public function matching(CriteriaInterface $criteria): array
     {
-        $builder = $this->model;
+        /** @var Model $model */
+        $model = new $this->model();
+
+        $builder = $model;
         foreach ($criteria->getCriteriaList() as $criteriaItem) {
             [$method, $params] = $this->translateQuery($criteriaItem);
             $builder = $builder->{$method}(...$params);
@@ -106,7 +110,9 @@ class Repository implements GenericRepositoryInterface
 
     public function update(CriteriaInterface $criteria, array $fields): bool
     {
-        $builder = $this->model;
+        /** @var Model $model */
+        $model = new $this->model();
+        $builder = $model;
 
         foreach ($criteria->getCriteriaList() as $criteriaItem) {
             [$method, $params] = $this->translateQuery($criteriaItem);
