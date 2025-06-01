@@ -49,5 +49,11 @@ Router::addGroup('/api/v1', function () {
             'url_rules' => ['id' => 'uuid|required'],
             'body_rules' => ['product_id' => 'integer|required']
         ]);
+
+        Router::post('/{id}/favorites/batch', [Controller\ClientFavoriteProductController::class, 'AddManyFavorites'], [
+            'middleware' => [Middleware\UrlParamsValidationMiddleware::class,  App\Middleware\BodyValidationMiddleware::class],
+            'url_rules' => ['id' => 'uuid|required'],
+            'body_rules' => ['product_ids' => 'array|required']
+        ]);
     });
 });

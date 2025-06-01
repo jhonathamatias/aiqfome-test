@@ -20,10 +20,10 @@ class FakeStoreApi
      * Fetch a product by its ID from the Fake Store API.
      *
      * @param int $id The ID of the product to fetch.
-     * @return stdClass{title: string, price: float, description: string, image: string, rating: object{rate: float|null, count: int|null}}
+     * @return stdClass{title: string, price: float, description: string, image: string, rating: object{rate: float|null, count: int|null}}|false
      * @throws RuntimeException If the request fails or the product is not found.
      */
-    public function fetchProduct(int $id): stdClass
+    public function fetchProduct(int $id): stdClass|false
     {
         $response = $this->client->request('GET', "/products/{$id}");
 
@@ -33,6 +33,9 @@ class FakeStoreApi
 
         $data = $response->getBody()->getContents();
 
+        if (empty($data) === true) {
+            return false;
+        }
         return (object)json_decode($data);
     }
 }

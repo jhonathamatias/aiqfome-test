@@ -21,15 +21,19 @@ use App\Web\OutputInterface;
 use Hyperf\HttpServer\Response;
 use Psr\Http\Message\ResponseInterface;
 use App\Application\DependencyInjection;
+use App\Infrastructure\SpecificRepository\ProductsRepositoryInterface;
+use App\Infrastructure\SpecificRepository\FakeStore\ProductsRepository;
 
 return [
-    ResponseInterface::class          => Response::class,
+    ResponseInterface::class           => Response::class,
 
-    OutputInterface::class            => JsonOutput::class,
-    InputInterface::class             => Input::class,
+    OutputInterface::class             => JsonOutput::class,
+    InputInterface::class              => Input::class,
 
-    GenericRepositoryInterface::class => GenericRepository\HyperfORM\Repository::class,
-    CriteriaInterface::class          => Criteria::class,
+    GenericRepositoryInterface::class  => GenericRepository\HyperfORM\Repository::class,
+    CriteriaInterface::class           => Criteria::class,
 
-    HttpClientInterface::class        => DependencyInjection\HttpClientFactoryInvoker::class,
+    HttpClientInterface::class         => DependencyInjection\HttpClientFactoryInvoker::class,
+
+    ProductsRepositoryInterface::class => ProductsRepository::class
 ];

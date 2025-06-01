@@ -2,23 +2,26 @@
 
 namespace App\Application\UseCase\Clients;
 
+use App\Application\UseCase\Products\GetProduct;
 use App\Domain\Entity\Exceptions\AlreadyExistsException;
-use App\Infrastructure\Apis\FakeStoreApi;
 use App\Infrastructure\GenericRepository\CriteriaInterface;
 use App\Infrastructure\GenericRepository\GenericRepositoryInterface;
+use Psr\SimpleCache\CacheInterface;
 
 class AddFavoriteProduct
 {
     public function __construct(
         protected GenericRepositoryInterface $repository,
         protected CriteriaInterface $criteria,
+        protected CacheInterface $cache,
         protected GetClient $getClient,
-        protected FakeStoreApi $api
+        protected GetProduct $getProduct
     ) {
     }
     
     public function execute(string $clientId, int $productId): object
     {
+        var_dump("Adding product {$productId} for client {$clientId}");
         $this->getClient->execute($clientId);
 
         $this->repository->setCollectionName('favorite_products');
@@ -32,9 +35,10 @@ class AddFavoriteProduct
             throw new AlreadyExistsException("Product with ID {$productId} already exists in favorites.");
         }
 
-        $product = $this->api->fetchProduct($productId);
+        /** @var object{title: string, price: float, description: string, image: string, rating: object{rate: float, count: int}} $product */
+        $product = $this->getProduct->execute($productId);
 
-        $this->repository->save((object)[
+        $this->repository->save(entity: (object)[
             'client_id' => $clientId,
             'product_id' => $productId,
             'title' => $product->title,

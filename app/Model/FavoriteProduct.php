@@ -20,6 +20,12 @@ use Hyperf\DbConnection\Model\Model;
  */
 class FavoriteProduct extends Model
 {
+    public bool $incrementing = false;
+
+    protected string $primaryKey = 'id';
+
+    protected string $keyType = 'string';
+
     /**
      * The table associated with the model.
      */
