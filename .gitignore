@@ -12,5 +12,4 @@ vendor/
 .phpunit*
 *.cache
 .vscode/
-*.pem
 .phpstorm.meta.php
