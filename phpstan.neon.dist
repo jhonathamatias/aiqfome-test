@@ -11,6 +11,7 @@ parameters:
     maximumNumberOfProcesses: 4
   excludePaths:
     - tests/*
+    - migrations/*
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     - '#Static call to instance method Hyperf\\HttpServer\\Router\\Router::[a-zA-Z0-9\\_]+\(\)#'

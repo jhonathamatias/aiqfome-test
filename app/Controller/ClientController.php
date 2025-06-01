@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Application\UseCase\Clients\AddFavoriteProduct;
 use App\Application\UseCase\Clients\CreateClient;
 use App\Application\UseCase\Clients\DeleteClient;
 use App\Application\UseCase\Clients\GetClient;
@@ -29,7 +30,8 @@ class ClientController
         protected CreateClient $createClient,
         protected GetClient $getClient,
         protected UpdateClient $updateClient,
-        protected DeleteClient $deleteClient
+        protected DeleteClient $deleteClient,
+        protected AddFavoriteProduct $addFavoriteProduct
     ) {
     }
 
@@ -61,7 +63,7 @@ class ClientController
                 'exception' => $e,
                 'request' => $this->input->getData($request),
             ]);
-            return $this->output->getResponseError($response, 400, 'An error occurred while creating the client');
+            return $this->output->getResponseError($response, 400, $e->getMessage());
         }
     }
 
@@ -118,6 +120,8 @@ class ClientController
             );
 
             return $this->output->getResponse($response, 200, ['message' => 'Client updated successfully']);
+        } catch (NotFoundException $e) {
+            return $this->output->getResponseError($response, 404, $e->getMessage());
         } catch (AlreadyExistsException $e) {
             return $this->output->getResponseError($response, 409, $e->getMessage());
         } catch (ValidationException $e) {
@@ -154,6 +158,36 @@ class ClientController
             return $this->output->getResponseError($response, 422, 'Validation failed', $errors);
         } catch (Exception) {
             return $this->output->getResponseError($response, 400, 'An error occurred while deleting the client');
+        }
+    }
+    
+    public function addFavoriteProduct(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        try {
+            /** @var array<string, string> $urlParams */
+            $urlParams = $this->input->getUrlParameters($request);
+            $body = $this->input->getData($request);
+
+            /** @var array{id: string, product_id: int} $data */
+            $data = array_merge($urlParams, $body);
+            
+            $validator = $this->validationFactory->make(
+                $data,
+                [
+                    'id' => 'uuid|required',
+                    'product_id' => 'integer|required'
+                ]
+            );
+            $validator->validate();
+
+            $product = $this->addFavoriteProduct->execute($data['id'], $data['product_id']);
+
+            return $this->output->getResponse($response, 201, $product);
+        } catch (ValidationException $e) {
+            $errors = $e->validator->errors()->all();
+            return $this->output->getResponseError($response, 422, 'Validation failed', $errors);
+        } catch (Exception $e) {
+            return $this->output->getResponseError($response, 400, $e->getMessage());
         }
     }
 }
