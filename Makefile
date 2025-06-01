@@ -2,7 +2,7 @@
 setup:
 	cp .env.example .env
 	docker build . -f docker/dev.Dockerfile -t hyperf-dev-server --no-cache
-	docker run --rm -v ".:/opt/www" hyperf-dev-server composer install
+	docker run --dns 8.8.8.8 --rm -v ".:/opt/www" hyperf-dev-server composer install
 
 .PHONY: up
 start:
