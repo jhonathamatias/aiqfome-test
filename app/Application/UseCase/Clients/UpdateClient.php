@@ -16,7 +16,6 @@ class UpdateClient
         protected CriteriaInterface $criteria,
         protected GetClient $getClient
     ) {
-        $this->repository->setCollectionName('clients');
     }
 
     /**
@@ -25,6 +24,8 @@ class UpdateClient
      */
     public function execute(string $id, string|null $name = null, string|null $email = null): bool
     {
+        $this->repository->setCollectionName('clients');
+
         $this->getClient->execute($id);
 
         $fields = [];
@@ -38,9 +39,10 @@ class UpdateClient
             $fields['email'] = $email;
         }
 
-        $this->criteria->clear();
-        $this->criteria->equal('id', $id);
-        $result = $this->repository->update($this->criteria, $fields);
+        $criteria = clone $this->criteria;
+        $criteria->equal('id', $id);
+
+        $result = $this->repository->update($criteria, $fields);
 
         if ($result === false) {
             throw new Exception('Client not updated');
@@ -50,10 +52,10 @@ class UpdateClient
 
     protected function alreadyExistsWithEmail(string $email): true
     {
-        $this->criteria->clear();
-        $this->criteria->equal('email', $email);
+        $criteria = clone $this->criteria;
+        $criteria->equal('email', $email);
 
-        $result = $this->repository->matching($this->criteria)[0] ?? false;
+        $result = $this->repository->matching($criteria)[0] ?? false;
 
         if ($result !== false) {
             throw new AlreadyExistsException('Client with this email already exists');

@@ -1,18 +1,10 @@
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 
 namespace App\Infrastructure\HttpClient;
 
-use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 use Psr\Http\Message\ResponseInterface;
 
@@ -23,7 +15,7 @@ class Client implements HttpClientInterface
     /** @var array<string> */
     protected array $headers = [];
 
-    public function __construct(protected GuzzleClient $client)
+    public function __construct(protected ClientInterface $client)
     {
     }
 

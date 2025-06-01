@@ -13,7 +13,6 @@ class DeleteClient
         protected GenericRepositoryInterface $repository,
         protected GetClient $getClient
     ) {
-        $this->repository->setCollectionName('clients');
     }
 
     /**
@@ -22,6 +21,8 @@ class DeleteClient
      */
     public function execute(string $id): object
     {
+        $this->repository->setCollectionName('clients');
+
         $client = $this->getClient->execute($id);
 
         $result = $this->repository->delete($id);

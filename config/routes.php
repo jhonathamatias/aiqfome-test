@@ -20,9 +20,11 @@ Router::get('/favicon.ico', function () {
 
 Router::addGroup('/api/v1', function () {
     Router::addGroup('/clients', function () {
-        Router::post('/', [Controller\ClientController::class, 'create']);
+        Router::post('', [Controller\ClientController::class, 'create']);
         Router::get('/{id}', [Controller\ClientController::class, 'get']);
         Router::put('/{id}', [Controller\ClientController::class, 'update']);
         Router::delete('/{id}', [Controller\ClientController::class, 'delete']);
+
+        Router::post('/{id}/favorites', [Controller\ClientController::class, 'addFavoriteProduct']);
     });
 });

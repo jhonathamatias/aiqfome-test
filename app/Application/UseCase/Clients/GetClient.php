@@ -12,12 +12,13 @@ class GetClient
     public function __construct(
         protected GenericRepositoryInterface $repository
     ) {
-        $this->repository->setCollectionName('clients');
     }
 
 
     public function execute(string $id): object
     {
+        $this->repository->setCollectionName('clients');
+
         $result = $this->repository->getById($id);
 
         if (false === $result) {

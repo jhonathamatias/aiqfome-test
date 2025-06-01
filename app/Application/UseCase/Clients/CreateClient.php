@@ -17,7 +17,6 @@ class CreateClient
         protected GenericRepositoryInterface $repository,
         protected CriteriaInterface $criteria
     ) {
-        $this->repository->setCollectionName('clients');
     }
 
     /**
@@ -27,6 +26,8 @@ class CreateClient
      */
     public function execute(string $name, string $email): object
     {
+        $this->repository->setCollectionName('clients');
+
         $clientAlreadyExists = $this->getClientWithEmail($email);
 
         $client = new Client();
@@ -51,7 +52,8 @@ class CreateClient
 
     protected function getClientWithEmail(string $email): object|false
     {
-        $this->criteria->equal('email', $email);
-        return $this->repository->matching($this->criteria)[0] ?? false;
+        $criteria = clone $this->criteria;
+        $criteria->equal('email', $email);
+        return $this->repository->matching($criteria)[0] ?? false;
     }
 }
