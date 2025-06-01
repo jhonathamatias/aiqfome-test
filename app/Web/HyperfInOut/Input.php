@@ -12,7 +12,9 @@ readonly class Input implements InputInterface
     public function getUrlParameters(ServerRequestInterface $request): array
     {
         $attributes = $request->getAttributes();
-        return $attributes[Dispatched::class]->params;
+        $queryParams = $request->getQueryParams();
+
+        return array_merge($queryParams, $attributes[Dispatched::class]->params);
     }
 
     /**

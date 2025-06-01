@@ -25,6 +25,7 @@ class UrlParamsValidationMiddleware implements MiddlewareInterface
          * @var Dispatched $dispatched
          */
         $dispatched = $request->getAttribute(Dispatched::class);
+        $queryParams = $request->getQueryParams();
 
         if (null === $dispatched->handler) {
             return $handler->handle($request);
@@ -36,8 +37,10 @@ class UrlParamsValidationMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
+        $params = array_merge($queryParams, $dispatched->params);
+
         $validator = $this->validationFactory->make(
-            $dispatched->params,
+            $params,
             $options->url_rules
         );
 

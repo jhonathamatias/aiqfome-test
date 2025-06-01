@@ -21,7 +21,6 @@ class AddFavoriteProduct
     
     public function execute(string $clientId, int $productId): object
     {
-        var_dump("Adding product {$productId} for client {$clientId}");
         $this->getClient->execute($clientId);
 
         $this->repository->setCollectionName('favorite_products');
