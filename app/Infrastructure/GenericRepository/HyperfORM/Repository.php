@@ -82,8 +82,9 @@ class Repository implements GenericRepositoryInterface
     {
         /** @var Model $model */
         $model = new $this->model();
-        $builder = $model;
-        $builder =  $builder->where('id', '=', $id);
+
+        /** @phpstan-ignore-next-line */
+        $builder =  $model->where('id', '=', $id);
         return (bool)$builder->delete();
     }
 

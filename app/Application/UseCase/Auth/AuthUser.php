@@ -23,7 +23,7 @@ class AuthUser
         $criteria = clone $this->criteria;
         $criteria->equal('email', $email);
 
-        /** @var object{id: string, email: string, password: string}|null $users */
+        /** @var object{id: string, email: string, password: string}|null $user */
         $user = $this->repository->matching($criteria)[0] ?? null;
 
         if (null === $user) {

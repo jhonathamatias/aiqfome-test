@@ -43,6 +43,10 @@ Router::addGroup('/api/v1', function () {
             'middleware' => [Middleware\UrlParamsValidationMiddleware::class],
             'url_rules' => ['id' => 'uuid|required']
         ]);
+        Router::get('', [Controller\ClientController::class, 'list'], [
+            'middleware' => [Middleware\UrlParamsValidationMiddleware::class],
+            'url_rules' => ['limit' => 'integer|nullable']
+        ]);
         /**
          * Client favorite products routes
          */

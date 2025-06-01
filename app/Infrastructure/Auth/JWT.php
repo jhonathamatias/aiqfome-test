@@ -6,6 +6,8 @@ use App\Infrastructure\Auth\Exceptions\CreateTokenErrorException;
 use App\Infrastructure\Auth\Exceptions\InvalidJWTException;
 use App\Infrastructure\Auth\Interfaces\JWTInterface;
 use Lcobucci\JWT\Configuration;
+use Lcobucci\JWT\Token;
+use Lcobucci\JWT\UnencryptedToken;
 use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Lcobucci\JWT\Validation\Constraint\StrictValidAt;
 use Psr\Clock\ClockInterface;
@@ -13,6 +15,7 @@ use Psr\Clock\ClockInterface;
 class JWT implements JWTInterface
 {
     protected BearerToken $token;
+
     protected object $data;
 
     public function __construct(
@@ -48,7 +51,8 @@ class JWT implements JWTInterface
                 ->canOnlyBeUsedAfter($now);
 
             if (isset($this->data)) {
-                foreach ($this->data as $key => $value) {
+                foreach ((array)$this->data as $key => $value) {
+                    assert($key !== '');
                     $builder = $builder->withClaim($key, $value);
                 }
             }
@@ -64,9 +68,12 @@ class JWT implements JWTInterface
     public function validate(): bool
     {
         try {
+            $tokenString = $this->getToken();
+            assert($tokenString !== '');
             $parser    = $this->configuration->parser();
             $validator = $this->configuration->validator();
-            $token     = $parser->parse($this->getToken());
+            /** @var UnencryptedToken $token */
+            $token     = $parser->parse($tokenString);
 
             $validator->assert($token, new SignedWith(
                 $this->configuration->signer(),

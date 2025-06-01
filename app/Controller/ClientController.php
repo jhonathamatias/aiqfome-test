@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Application\UseCase\Clients\CreateClient;
 use App\Application\UseCase\Clients\DeleteClient;
+use App\Application\UseCase\Clients\GetAllClients;
 use App\Application\UseCase\Clients\GetClient;
 use App\Application\UseCase\Clients\UpdateClient;
 use App\Domain\Entity\Exceptions\AlreadyExistsException;
@@ -27,6 +28,7 @@ class ClientController
         protected GetClient $getClient,
         protected UpdateClient $updateClient,
         protected DeleteClient $deleteClient,
+        protected GetAllClients $getAllClients
     ) {
     }
 
@@ -119,6 +121,23 @@ class ClientController
                 'request' => $this->input->getData($request),
             ]);
             return $this->output->getResponseError($response, 400, 'An error occurred while deleting the client');
+        }
+    }
+    
+    public function list(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
+    {
+        try {
+            $urlParams = (object)$this->input->getUrlParameters($request);
+
+            $clients = $this->getAllClients->execute(isset($urlParams->limit) ? (int)$urlParams->limit : 100);
+
+            return $this->output->getResponse($response, 200, $clients);
+        } catch (Exception $e) {
+            $this->logger->error('Error listing clients', [
+                'exception' => $e,
+                'request' => $this->input->getData($request),
+            ]);
+            return $this->output->getResponseError($response, 400, 'An error occurred while retrieving the clients');
         }
     }
 }
