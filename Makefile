@@ -12,12 +12,12 @@ start:
 stop:
 	docker compose stop
 
-.PHONY: reload
+.PHONY: restart
 restart:
 	docker compose stop
 	docker compose up -d
 
-.PHONY: reload
+.PHONY: rebuild
 rebuild:
 	docker compose up -d --build
 
@@ -32,3 +32,7 @@ seed:
 .PHONY: logs
 logs:
 	docker compose logs -f
+
+.PHONY: test
+test:
+	docker compose exec hyperf-skeleton composer test
