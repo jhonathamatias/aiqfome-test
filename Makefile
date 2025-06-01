@@ -23,7 +23,11 @@ rebuild:
 
 .PHONY: migrate
 migrate:
-	docker compose exec	 migrate
+	docker compose exec hyperf-skeleton bin/hyperf.php migrate
+
+.PHONY: seed
+seed:
+	docker compose exec hyperf-skeleton bin/hyperf.php db:seed
 
 .PHONY: logs
 logs:
