@@ -20,6 +20,8 @@ Router::get('/favicon.ico', function () {
 });
 
 Router::addGroup('/api/v1', function () {
+    Router::post('/auth', [Controller\UserController::class, 'auth']);
+
     Router::addGroup('/clients', function () {
         /**
          * Client routes
@@ -49,11 +51,14 @@ Router::addGroup('/api/v1', function () {
             'url_rules' => ['id' => 'uuid|required'],
             'body_rules' => ['product_id' => 'integer|required']
         ]);
-
         Router::post('/{id}/favorites/batch', [Controller\ClientFavoriteProductController::class, 'AddManyFavorites'], [
             'middleware' => [Middleware\UrlParamsValidationMiddleware::class,  App\Middleware\BodyValidationMiddleware::class],
             'url_rules' => ['id' => 'uuid|required'],
             'body_rules' => ['product_ids' => 'array|required']
         ]);
-    });
+        Router::get('/{id}/favorites', [Controller\ClientFavoriteProductController::class, 'listFavorites'], [
+            'middleware' => [Middleware\UrlParamsValidationMiddleware::class],
+            'url_rules' => ['id' => 'uuid|required', 'limit' => 'integer|nullable']
+        ]);
+    }, ['middleware' => [Middleware\AuthMiddleware::class]  ]);
 });

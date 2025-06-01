@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use App\Web\OutputInterface;
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Response;
 use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\Validation\ValidatorFactory;

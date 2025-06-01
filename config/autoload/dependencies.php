@@ -9,6 +9,9 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
+use App\Infrastructure\Auth\Interfaces\JWTInterface;
+use App\Infrastructure\Auth\JWT;
 use App\Infrastructure\GenericRepository\CriteriaInterface;
 use App\Infrastructure\GenericRepository\GenericRepositoryInterface;
 use App\Infrastructure\GenericRepository\HyperfORM\Criteria;
@@ -31,9 +34,14 @@ return [
     InputInterface::class              => Input::class,
 
     GenericRepositoryInterface::class  => GenericRepository\HyperfORM\Repository::class,
+    ProductsRepositoryInterface::class => ProductsRepository::class,
+
     CriteriaInterface::class           => Criteria::class,
 
     HttpClientInterface::class         => DependencyInjection\HttpClientFactoryInvoker::class,
+    Lcobucci\JWT\Configuration::class  => DependencyInjection\JWTConfigurationFactory::class,
 
-    ProductsRepositoryInterface::class => ProductsRepository::class
+    JWTInterface::class                => JWT::class,
+    
+    Psr\Clock\ClockInterface::class    => App\Infrastructure\Clock::class
 ];
