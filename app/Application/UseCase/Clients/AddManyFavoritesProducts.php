@@ -22,7 +22,7 @@ class AddManyFavoritesProducts
 
         foreach ($productIds as $productId) {
             $parallel->add(function () use ($clientId, $productId) {
-                Coroutine\Coroutine::sleep(1);
+                Coroutine\Coroutine::sleep(0.1);
                 try {
                     return $this->addFavoriteProduct->execute($clientId, $productId);
                 } catch (\Exception $e) {
