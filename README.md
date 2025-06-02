@@ -1,63 +1,130 @@
-# Introduction
+# Skeleton Hyperf
 
-This is a skeleton application using the Hyperf framework. This application is meant to be used as a starting place for those looking to get their feet wet with Hyperf Framework.
+Aplicação de exemplo utilizando o framework [Hyperf](https://hyperf.io/), pronta para servir como ponto de partida para novos projetos PHP modernos, performáticos e baseados em microserviços.
 
-# Requirements
+## Requisitos
 
-Hyperf has some requirements for the system environment, it can only run under Linux and Mac environment, but due to the development of Docker virtualization technology, Docker for Windows can also be used as the running environment under Windows.
+- **PHP >= 8.1**
+- Extensões PHP: Swoole (>= 5.0) ou Swow (>= 1.3), JSON, Pcntl, OpenSSL, PDO, Redis, Protobuf
+- **Docker** (recomendado para desenvolvimento)
+- **Composer**
 
-The various versions of Dockerfile have been prepared for you in the [hyperf/hyperf-docker](https://github.com/hyperf/hyperf-docker) project, or directly based on the already built [hyperf/hyperf](https://hub.docker.com/r/hyperf/hyperf) Image to run.
+## Arquitetura
 
-When you don't want to use Docker as the basis for your running environment, you need to make sure that your operating environment meets the following requirements:  
+O projeto adota princípios da Arquitetura Limpa (Clean Architecture), organizando o código em camadas bem definidas para garantir baixo acoplamento, alta coesão e facilidade de manutenção. Os principais componentes são:
 
- - PHP >= 8.1
- - Any of the following network engines
-   - Swoole PHP extension >= 5.0，with `swoole.use_shortname` set to `Off` in your `php.ini`
-   - Swow PHP extension >= 1.3
- - JSON PHP extension
- - Pcntl PHP extension
- - OpenSSL PHP extension （If you need to use the HTTPS）
- - PDO PHP extension （If you need to use the MySQL Client）
- - Redis PHP extension （If you need to use the Redis Client）
- - Protobuf PHP extension （If you need to use the gRPC Server or Client）
+- **Domain (Domínio):** Entidades e regras de negócio
+- **Application (Aplicação):** Serviços de aplicação e orquestração dos casos de uso.
+- **Infrastructure (Infraestrutura):** Implementações de repositórios, integrações externas (banco de dados, Redis, APIs, etc).
+- **Interface (Apresentação):** Controllers, rotas, middlewares e validações.
 
-# Installation using Composer
+Outros pontos:
 
-The easiest way to create a new Hyperf project is to use [Composer](https://getcomposer.org/). If you don't have it already installed, then please install as per [the documentation](https://getcomposer.org/download/).
+- **Framework:** Hyperf (PHP moderno, orientado a alto desempenho e corrotinas)
+- **Banco de Dados:** PostgreSQL
+- **Cache:** Redis
+- **Gerenciamento de dependências:** Composer
+- **Containers:** Docker e Docker Compose
+- **Migrations e Seeders:** Comandos Hyperf
+- **Testes:** PHPUnit
+- **Validação:** Middlewares dedicados
+- **Autenticação:** Middleware dedicado para rotas protegidas
 
-To create your new Hyperf project:
+## Instalação
 
-```bash
-composer create-project hyperf/hyperf-skeleton path/to/install
-```
-
-If your development environment is based on Docker you can use the official Composer image to create a new Hyperf project:
-
-```bash
-docker run --rm -it -v $(pwd):/app composer create-project --ignore-platform-reqs hyperf/hyperf-skeleton path/to/install
-```
-
-# Getting started
-
-Once installed, you can run the server immediately using the command below.
+### Usando Docker
 
 ```bash
-cd path/to/install
-php bin/hyperf.php start
+make setup
+make start
 ```
+## Testes
 
-Or if in a Docker based environment you can use the `docker-compose.yml` provided by the template:
+Execute os testes automatizados com o comando:
 
 ```bash
-cd path/to/install
-docker-compose up
+make test
+```
+## Migrations
+
+Para aplicar as migrations e criar as tabelas no banco de dados, execute:
+
+```bash
+make migrate
 ```
 
-This will start the cli-server on port `9501`, and bind it to all network interfaces. You can then visit the site at `http://localhost:9501/` which will bring up Hyperf default home page.
+## Seed
 
-## Hints
+Para popular o banco de dados com dados de exemplo, execute:
 
-- A nice tip is to rename `hyperf-skeleton` of files like `composer.json` and `docker-compose.yml` to your actual project name.
-- Take a look at `config/routes.php` and `app/Controller/IndexController.php` to see an example of a HTTP entrypoint.
+```bash
+make seed
+```
 
-**Remember:** you can always replace the contents of this README.md file to something that fits your project description.
+## Endpoints da API
+
+### Autenticação
+
+- **POST** `/api/v1/auth`  
+  Autentica o usuário e retorna um token.
+
+---
+
+### Clientes (protegido por autenticação)
+
+- **POST** `/api/v1/clients`  
+  Cria um novo cliente.  
+  **Body:**  
+  - `name` (string, obrigatório)  
+  - `email` (email, obrigatório)
+
+- **GET** `/api/v1/clients/{id}`  
+  Consulta cliente por ID (UUID).  
+  **URL param:**  
+  - `id` (uuid, obrigatório)
+
+- **PUT** `/api/v1/clients/{id}`  
+  Atualiza dados do cliente.  
+  **URL param:**  
+  - `id` (uuid, obrigatório)  
+  **Body:**  
+  - `name` (string, opcional)  
+  - `email` (email, opcional)
+
+- **DELETE** `/api/v1/clients/{id}`  
+  Remove cliente.  
+  **URL param:**  
+  - `id` (uuid, obrigatório)
+
+- **GET** `/api/v1/clients`  
+  Lista clientes.  
+  **Query param:**  
+  - `limit` (integer, opcional)
+
+---
+
+### Favoritos do Cliente
+
+- **POST** `/api/v1/clients/{id}/favorites`  
+  Adiciona produto favorito ao cliente.  
+  **URL param:**  
+  - `id` (uuid, obrigatório)  
+  **Body:**  
+  - `product_id` (integer, obrigatório)
+
+- **POST** `/api/v1/clients/{id}/favorites/batch`  
+  Adiciona vários produtos favoritos.  
+  **URL param:**  
+  - `id` (uuid, obrigatório)  
+  **Body:**  
+  - `product_ids` (array de inteiros, obrigatório)
+
+- **GET** `/api/v1/clients/{id}/favorites`  
+  Lista favoritos do cliente.  
+  **URL param:**  
+  - `id` (uuid, obrigatório)  
+  - `limit` (integer, opcional)
+
+---
+
+> Todas as rotas de clientes e favoritos exigem autenticação via middleware.
