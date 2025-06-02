@@ -17,6 +17,7 @@ O projeto adota princípios da Arquitetura Limpa (Clean Architecture), organizan
 - **Application (Aplicação):** Serviços de aplicação e orquestração dos casos de uso.
 - **Infrastructure (Infraestrutura):** Implementações de repositórios, integrações externas (banco de dados, Redis, APIs, etc).
 - **Interface (Apresentação):** Controllers, rotas, middlewares e validações.
+- **Repository  Pattern:** Utilizado para abstrair o acesso a dados, permitindo fácil substituição e testes.
 
 Outros pontos:
 
