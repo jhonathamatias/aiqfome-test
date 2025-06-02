@@ -32,25 +32,32 @@ Outros pontos:
 
 ## Instalação
 
-### Usando Docker
+#### Usando Makefile
 
 ```bash
-make setup
-make start
+  make setup
+```
+
+#### Usando Docker Compose diretamente
+ 
+```bash
+  cp .env.example .env
+  docker build . -f docker/dev.Dockerfile -t hyperf-dev-server --no-cache
+  docker run --dns 8.8.8.8 --rm -v ".:/opt/www" hyperf-dev-server composer install
 ```
 ## Testes
 
 Execute os testes automatizados com o comando:
 
 ```bash
-make test
+  make test
 ```
 ## Migrations
 
 Para aplicar as migrations e criar as tabelas no banco de dados, execute:
 
 ```bash
-make migrate
+  make migrate
 ```
 
 ## Seed
@@ -58,15 +65,27 @@ make migrate
 Para popular o banco de dados com dados de exemplo, execute:
 
 ```bash
-make seed
+  make seed
 ```
 
+##  Inicialização do Servidor
+Acesse `http://localhost:9501` após a inicialização.
+#### Usando Makefile
+  ```bash
+    make start
+```
+#### Usando Docker Compose diretamente
+  ```bash
+    docker-compose up -d
+  ```
 ## Endpoints da API
 
 ### Autenticação
-
+Autentica o usuário e retorna um token.
 - **POST** `/api/v1/auth`  
-  Autentica o usuário e retorna um token.
+**Body:**
+  - `email` (email, obrigatório): admin@admin.com
+  - `password` (string, obrigatório): 123456
 
 ---
 > Todas as rotas de clientes e favoritos exigem autenticação via middleware utilizando **JWT Bearer Token**.
