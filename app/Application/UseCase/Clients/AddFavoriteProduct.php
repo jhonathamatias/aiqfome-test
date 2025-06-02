@@ -6,14 +6,12 @@ use App\Application\UseCase\Products\GetProduct;
 use App\Domain\Entity\Exceptions\AlreadyExistsException;
 use App\Infrastructure\GenericRepository\CriteriaInterface;
 use App\Infrastructure\GenericRepository\GenericRepositoryInterface;
-use Psr\SimpleCache\CacheInterface;
 
 class AddFavoriteProduct
 {
     public function __construct(
         protected GenericRepositoryInterface $repository,
         protected CriteriaInterface $criteria,
-        protected CacheInterface $cache,
         protected GetClient $getClient,
         protected GetProduct $getProduct
     ) {
