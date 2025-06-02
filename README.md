@@ -69,6 +69,13 @@ Para popular o banco de dados com dados de exemplo, execute:
   make seed
 ```
 
+## Análise estática de código
+Para verificar a qualidade do código com phpstan, execute:
+
+```bash
+  make stan
+```
+
 ##  Inicialização do Servidor
 Acesse `http://localhost:9501` após a inicialização.
 #### Usando Makefile

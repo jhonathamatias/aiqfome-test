@@ -36,3 +36,11 @@ logs:
 .PHONY: test
 test:
 	docker compose exec hyperf-skeleton composer test
+
+.PHONY: stan
+stan:
+	docker compose exec hyperf-skeleton vendor/bin/phpstan analyse
+
+.PHONY: php-cs-fixer
+fixer:
+	docker compose exec hyperf-skeleton vendor/bin/php-cs-fixer fix --diff --dry-run
