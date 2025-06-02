@@ -69,7 +69,13 @@ make seed
   Autentica o usuário e retorna um token.
 
 ---
+> Todas as rotas de clientes e favoritos exigem autenticação via middleware utilizando **JWT Bearer Token**.
 
+> Para acessar essas rotas, envie o header:
+```http request
+curl -X GET http://localhost:9501/api/v1/clients \
+-H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJh..."
+```
 ### Clientes (protegido por autenticação)
 
 - **POST** `/api/v1/clients`  
