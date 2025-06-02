@@ -1,6 +1,6 @@
-# Skeleton Hyperf
+# Aiqfome Teste
 
-Aplicação de exemplo utilizando o framework [Hyperf](https://hyperf.io/), pronta para servir como ponto de partida para novos projetos PHP modernos, performáticos e baseados em microserviços.
+Aplicação utilizando o framework [Hyperf](https://hyperf.io/), pronta para servir como ponto de partida para novos projetos PHP modernos, performáticos e baseados em microserviços.
 
 ## Requisitos
 
